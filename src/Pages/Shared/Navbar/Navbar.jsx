@@ -1,13 +1,47 @@
 import { Link } from "react-router-dom";
-import logo from "../../../assets/logo.svg"
+import logo from "../../../assets/logo.svg";
+import { useContext } from "react";
+import { AuthContext } from "../../../Providers/AuthProvider";
 
 const Navbar = () => {
-  const navitems = <>
-    <li><Link to ="/">Home</Link> </li>
-    <li><Link to="about" >About</Link> </li>
-   
-  </>
-  
+  const { user, logOut } = useContext(AuthContext);
+
+  const handleLogin = () => {
+    logOut()
+      .then(() => {})
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
+  const navItems = (
+    <>
+      <li>
+        <Link to="/">Home</Link>
+      </li>
+      <li>
+        <Link to="about">About</Link>
+      </li>
+      {user?.email ? (
+        <>
+          <li>
+            
+            <Link to="/bookings">My Booking</Link>
+          </li>
+          <li>
+            <button className="btn btn-secondary" onClick={handleLogin}>
+              Log out
+            </button>
+          </li>
+        </>
+      ) : (
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      )}
+    </>
+  );
+
   return (
     <div className="navbar bg-base-100 h-28 mb-4">
       <div className="navbar-start">
@@ -32,7 +66,7 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {navitems}
+            {navItems}
           </ul>
         </div>
         <Link to="/" className="btn btn-ghost normal-case text-xl">
@@ -40,14 +74,13 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{navitems}</ul>
+        <ul className="menu menu-horizontal px-1">{navItems}</ul>
       </div>
       <div className="navbar-end">
         <button className="btn btn-outline btn-secondary ">Appointment</button>
       </div>
     </div>
   );
-   
 };
 
 export default Navbar;
